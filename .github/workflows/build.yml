@@ -3,10 +3,9 @@ on:
   push:
     branches:
       - master
-
   schedule:
-    # Each day at midnight
-    - cron: '0 0 * * *'
+    - cron: "0 0 * * *"
+  workflow_dispatch: null
 
 jobs:
   build:
@@ -15,41 +14,21 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - windows-2019
-          - ubuntu-18.04
-          - ubuntu-16.04
-          - macos-10.15
+          - ubuntu-20.04
         crate:
-          - cargo-audit
-          - cargo-udeps
-          - cargo-nono
-          - cargo-geiger
-          - cargo-tarpaulin
-          - cargo-cache
-          - cargo-web
-          - cargo-tree
-          - cargo-binutils
-          - cargo-fuzz
-          - cargo-deb
-
-          - cross
+          # - cargo-tarpaulin
           - sccache
-          - mdbook
-          - wasm-pack
-          - wasm-bindgen-cli
-          - grcov
-
-        exclude:
-          # cargo-tarpaulin is available for Linux only
-          - crate: cargo-tarpaulin
-            os: windows-2019
-          - crate: cargo-tarpaulin
-            os: macos-10.15
-          # cargo-deb is available for Linux only
-          - crate: cargo-deb
-            os: windows-2019
-          - crate: cargo-deb
-            os: macos-10.15
+        # exclude:
+        #   # cargo-tarpaulin is available for Linux only
+        #   - crate: cargo-tarpaulin
+        #     os: windows-2019
+        #   - crate: cargo-tarpaulin
+        #     os: macos-10.15
+        #   # cargo-deb is available for Linux only
+        #   - crate: cargo-deb
+        #     os: windows-2019
+        #   - crate: cargo-deb
+        #     os: macos-10.15
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v1
@@ -63,9 +42,9 @@ jobs:
         env:
           CRATE: ${{ matrix.crate }}
           RUNNER: ${{ matrix.os }}
-          AWS_S3_REGION: ${{ secrets.AWS_S3_REGION }}
-          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+          AWS_S3_REGION: us-west-2
+          AWS_S3_BUCKET: rust-tool-cache
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          SIGN_CERT: ${{ secrets.SIGN_CERT }}
-          SIGN_CERT_PASSPHRASE: ${{ secrets.SIGN_CERT_PASSPHRASE }}
+          # SIGN_CERT: ${{ secrets.SIGN_CERT }}
+          # SIGN_CERT_PASSPHRASE: ${{ secrets.SIGN_CERT_PASSPHRASE }}

@@ -16,8 +16,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 S3_OBJECT_URL = 'https://s3.{region}.amazonaws.com/{bucket}/{{object_name}}'.format(
-    region=os.environ['AWS_S3_REGION'],
-    bucket=os.environ['AWS_S3_BUCKET'],
+    region='us-west-2',
+    bucket='rust-tool-cache',
 )
 S3_OBJECT_NAME = '{crate}/{runner}/{crate}-{version}.zip'
 CLOUDFRONT_URL = 'https://d1ad61wkrfbmp3.cloudfront.net/{filename}'
@@ -140,43 +140,43 @@ def build(runner, crate, version):
     return archive_path
 
 
-def sign(path):
-    openssl = which('openssl')
-    if openssl is None:
-        raise ValueError('Unable to find OpenSSL!')
+# def sign(path):
+#     openssl = which('openssl')
+#     if openssl is None:
+#         raise ValueError('Unable to find OpenSSL!')
 
-    signature_path = '{}.sig'.format(path)
+#     signature_path = '{}.sig'.format(path)
 
-    cert_fd, cert_path = tempfile.mkstemp(prefix='cert_')
-    os.write(cert_fd, os.environ['SIGN_CERT'].encode())
-    os.close(cert_fd)
+#     cert_fd, cert_path = tempfile.mkstemp(prefix='cert_')
+#     os.write(cert_fd, os.environ['SIGN_CERT'].encode())
+#     os.close(cert_fd)
 
-    args = [
-        openssl,
-        'dgst',
-        '-sha256',
-        '-sign',
-        cert_path,
-        '-passin',
-        'env:SIGN_CERT_PASSPHRASE',
-        '-out',
-        signature_path,
-        path,
-    ]
+#     args = [
+#         openssl,
+#         'dgst',
+#         '-sha256',
+#         '-sign',
+#         cert_path,
+#         '-passin',
+#         'env:SIGN_CERT_PASSPHRASE',
+#         '-out',
+#         signature_path,
+#         path,
+#     ]
 
-    try:
-        logging.info('Signing {} at {}'.format(path, signature_path))
-        subprocess.check_call(args)
-    finally:
-        os.unlink(cert_path)
+#     try:
+#         logging.info('Signing {} at {}'.format(path, signature_path))
+#         subprocess.check_call(args)
+#     finally:
+#         os.unlink(cert_path)
 
-    if not os.path.exists(signature_path):
-        raise ValueError('Signature file is missing')
+#     if not os.path.exists(signature_path):
+#         raise ValueError('Signature file is missing')
 
-    return signature_path
+#     return signature_path
 
 
-def upload(client, runner, crate, version, path, signature_path):
+def upload(client, runner, crate, version, path):
     """Upload prebuilt `crate` with `version` for `runner` environment
     located at `path` to the S3 bucket."""
 
@@ -185,15 +185,15 @@ def upload(client, runner, crate, version, path, signature_path):
         runner=runner,
         version=version,
     )
-    object_signature_name = '{}.sig'.format(object_name)
+    # object_signature_name = '{}.sig'.format(object_name)
 
     logging.info('Uploading {path} to {bucket}/{name}'.format(
         path=path,
-        bucket=os.environ['AWS_S3_BUCKET'],
+        bucket='rust-tool-cache',
         name=object_name,
     ))
-    client.upload_file(path, os.environ['AWS_S3_BUCKET'], object_name)
-    client.upload_file(signature_path, os.environ['AWS_S3_BUCKET'], object_signature_name)
+    client.upload_file(path, 'rust-tool-cache', object_name)
+    # client.upload_file(signature_path, os.environ['AWS_S3_BUCKET'], object_signature_name)
 
 
 class LogFormatter(logging.Formatter):
@@ -237,7 +237,7 @@ if __name__ == '__main__':
 
     s3_client = boto3.client(
         's3',
-        region_name=os.environ['AWS_S3_REGION'],
+        region_name='us-west-2',
         aws_access_key_id=os.environ['AWS_ACCESS_KEY_ID'],
         aws_secret_access_key=os.environ['AWS_SECRET_ACCESS_KEY']
     )
@@ -254,5 +254,5 @@ if __name__ == '__main__':
             else:
                 logging.info('Built {} at {}'.format(crate, path))
 
-                signature = sign(path)
-                upload(s3_client, runner, crate, version, path, signature)
+                # signature = sign(path)
+                upload(s3_client, runner, crate, version, path)
