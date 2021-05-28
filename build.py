@@ -20,7 +20,6 @@ S3_OBJECT_URL = 'https://s3.{region}.amazonaws.com/{bucket}/{{object_name}}'.for
     bucket='rust-tool-cache',
 )
 S3_OBJECT_NAME = '{crate}/{runner}/{crate}-{version}.zip'
-CLOUDFRONT_URL = 'https://d1ad61wkrfbmp3.cloudfront.net/{filename}'
 
 MAX_VERSIONS_TO_BUILD = 3
 
@@ -67,26 +66,16 @@ def crate_info(crate):
         yield version['num']
 
 
-def exists(runner, crate, version):
+def exists(client, runner, crate, version):
     """Check if `crate` with version `version` for `runner` environment
     already exists in the S3 bucket."""
-
     object_name = S3_OBJECT_NAME.format(
         crate=crate,
         runner=runner,
         version=version,
     )
-    url = CLOUDFRONT_URL.format(filename=object_name)
-    logging.info(
-        'Check if {crate} == {version} for {runner} exists in S3 bucket at {url}'.format(
-            crate=crate,
-            version=version,
-            runner=runner,
-            url=url,
-        ))
-    resp = requests.head(url, allow_redirects=True)
-
-    if resp.ok:
+    try:
+        client.head_object(Bucket='rust-tool-cache', Key=object_name)
         logging.info(
             '{crate} == {version} for {runner} already exists in S3 bucket'.format(
                 crate=crate,
@@ -94,8 +83,7 @@ def exists(runner, crate, version):
                 runner=runner,
             ))
         return True
-
-    else:
+    except:
         logging.warning(
             '{crate} == {version} for {runner} does not exists in S3 bucket'.format(
                 crate=crate,
@@ -131,7 +119,8 @@ def build(runner, crate, version):
     with zipfile.ZipFile(archive_path, 'w') as archive:
         logging.info('Creating archive at {}'.format(archive_path))
         for filename in os.listdir(os.path.join(root, 'bin')):
-            logging.info('Writing {} into {} archive'.format(filename, archive_path))
+            logging.info('Writing {} into {} archive'.format(
+                filename, archive_path))
             archive.write(
                 os.path.join(root, 'bin', filename),
                 filename,
@@ -244,7 +233,7 @@ if __name__ == '__main__':
 
     logging.info('Building {} crate for {} environment'.format(crate, runner))
     for version in crate_info(crate):
-        if not exists(runner, crate, version):
+        if not exists(s3_client, runner, crate, version):
             try:
                 path = build(runner, crate, version)
             except subprocess.CalledProcessError as e:
