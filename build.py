@@ -21,7 +21,7 @@ S3_OBJECT_URL = 'https://s3.{region}.amazonaws.com/{bucket}/{{object_name}}'.for
 )
 S3_OBJECT_NAME = '{crate}/{runner}/{crate}-{version}.zip'
 
-MAX_VERSIONS_TO_BUILD = 3
+MAX_VERSIONS_TO_BUILD = 1
 
 # Set of crates not to be built in any condition.
 EXCLUDES = {
