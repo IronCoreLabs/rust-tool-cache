@@ -84,8 +84,8 @@ def exists(client, runner, crate, version):
             ))
         return True
     except:
-        logging.warning(
-            '{crate} == {version} for {runner} does not exists in S3 bucket'.format(
+        logging.info(
+            '{crate} == {version} for {runner} does not exist in S3 bucket'.format(
                 crate=crate,
                 version=version,
                 runner=runner,

@@ -14,21 +14,12 @@ jobs:
       fail-fast: false
       matrix:
         os:
+          - windows-2019
+          - ubuntu-18.04
+          - macos-10.15
           - ubuntu-20.04
         crate:
-          # - cargo-tarpaulin
           - sccache
-        # exclude:
-        #   # cargo-tarpaulin is available for Linux only
-        #   - crate: cargo-tarpaulin
-        #     os: windows-2019
-        #   - crate: cargo-tarpaulin
-        #     os: macos-10.15
-        #   # cargo-deb is available for Linux only
-        #   - crate: cargo-deb
-        #     os: windows-2019
-        #   - crate: cargo-deb
-        #     os: macos-10.15
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v1
