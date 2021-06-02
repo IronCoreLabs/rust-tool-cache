@@ -20,6 +20,7 @@ jobs:
           - ubuntu-20.04
         crate:
           - sccache
+          - wasm-bindgen-cli
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v1
