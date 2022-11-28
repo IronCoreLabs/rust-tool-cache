@@ -2,7 +2,7 @@ name: Build tools cache
 on:
   push:
     branches:
-      - master
+      - main
   schedule:
     - cron: "0 0 * * *"
   workflow_dispatch: null
@@ -15,15 +15,17 @@ jobs:
       matrix:
         os:
           - windows-2019
-          - ubuntu-18.04
-          - macos-12
+          - windows-2022
           - ubuntu-20.04
+          - ubuntu-22.04
+          - macos-11
+          - macos-12
         crate:
           - sccache
           - wasm-bindgen-cli
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v2
         with:
           python-version: 3.8
       - name: Install dependencies
