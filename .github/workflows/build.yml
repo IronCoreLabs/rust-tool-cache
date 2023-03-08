@@ -20,8 +20,6 @@ jobs:
         - ubuntu-22.04
         - macos-11
         - macos-12
-        - buildjet-4vcpu-ubuntu-2204
-        - buildjet-4vcpu-ubuntu-2204-arm
         crate:
         - sccache
         - wasm-bindgen-cli
