@@ -31,7 +31,7 @@ jobs:
     - uses: IronCoreLabs/rust-toolchain@v1
       with:
         toolchain: stable
-    - if: ${{ matrix.os }} != "buildjet-4vcpu-ubuntu-2204-arm"
+    - if:  matrix.os != 'buildjet-4vcpu-ubuntu-2204-arm'
       uses: actions/setup-python@v4
       with:
         python-version: 3.11
