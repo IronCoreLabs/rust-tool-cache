@@ -3,6 +3,7 @@ on:
   push:
     branches:
     - main
+  pull_request:
   schedule:
   - cron: "0 0 * * *"
   workflow_dispatch: null
@@ -20,6 +21,7 @@ jobs:
         - ubuntu-22.04
         - macos-11
         - macos-12
+        - macos-14
         - buildjet-2vcpu-ubuntu-2204
         - buildjet-4vcpu-ubuntu-2204-arm
         crate:
