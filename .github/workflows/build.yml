@@ -34,7 +34,7 @@ jobs:
       with:
         toolchain: stable
     - if:  matrix.os != 'buildjet-4vcpu-ubuntu-2204-arm'
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: 3.11
     - name: Install dependencies
