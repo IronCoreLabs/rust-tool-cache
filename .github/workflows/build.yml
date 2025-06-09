@@ -27,6 +27,7 @@ jobs:
         - sccache
         - wasm-bindgen-cli
         - cargo-sort
+        - refinery-cli
     steps:
     - uses: actions/checkout@v4
     - uses: IronCoreLabs/rust-toolchain@v1
