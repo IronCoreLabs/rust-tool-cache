@@ -46,7 +46,7 @@ jobs:
         RUNNER: ${{ matrix.os }}
         AWS_S3_REGION: us-west-2
         AWS_S3_BUCKET: rust-tool-cache
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.TOOL_CACHE_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.TOOL_CACHE_SECRET_KEY }}
         # SIGN_CERT: ${{ secrets.SIGN_CERT }}
         # SIGN_CERT_PASSPHRASE: ${{ secrets.SIGN_CERT_PASSPHRASE }}
