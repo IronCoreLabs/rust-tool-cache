@@ -15,7 +15,6 @@ jobs:
       fail-fast: false
       matrix:
         os:
-        - windows-2019
         - windows-2022
         - ubuntu-22.04
         - ubuntu-24.04
@@ -27,6 +26,7 @@ jobs:
         - sccache
         - wasm-bindgen-cli
         - cargo-sort
+        - refinery-cli
     steps:
     - uses: actions/checkout@v4
     - uses: IronCoreLabs/rust-toolchain@v1
@@ -46,7 +46,7 @@ jobs:
         RUNNER: ${{ matrix.os }}
         AWS_S3_REGION: us-west-2
         AWS_S3_BUCKET: rust-tool-cache
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_ACCESS_KEY_ID: ${{ vars.TOOL_CACHE_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.TOOL_CACHE_SECRET_KEY }}
         # SIGN_CERT: ${{ secrets.SIGN_CERT }}
         # SIGN_CERT_PASSPHRASE: ${{ secrets.SIGN_CERT_PASSPHRASE }}
